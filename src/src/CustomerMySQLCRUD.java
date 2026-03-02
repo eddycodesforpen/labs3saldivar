@@ -1,126 +1,151 @@
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+/** Project: Lab3 - MySQL CRUD Operations
+ * Purpose Details: Handles MySQL database operations for Customer objects
+ * Course: IST 411
+ * Author: [YourLastName]
+ * Date Developed: 2024-01-15
+ * Last Date Changed: 2024-01-15
+ * Rev: 1.0
+ */
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Connection;
 
 public class CustomerMySQLCRUD {
-    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/school";
+    /**
+     * Database connection URL for MySQL.
+     */
+    private static final String URL = "jdbc:mysql://localhost:3306/retail_store";
+
+    /**
+     * Database username.
+     */
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "IST888IST888";
 
-    public static void main(String[] args) {
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+    /**
+     * Database password.
+     */
+    private static final String PASSWORD = "IST888IST888"; // Change this to your MySQL password
 
-            // Create
-            insertCustomer(connection, 1, "John", "Doe", 20, "john@example.com");
+    /**
+     * Establishes a connection to the MySQL database.
+     *
+     * @return Connection object for database operations.
+     * @throws SQLException If a database access error occurs.
+     */
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    }
 
-            // Read
-            List<Customer> customers = getAllCustomer(connection);
-            for (Customer customer : customers) {
-                System.out.println(customer.toString());
-            }
+    /**
+     * Inserts a new customer into the MySQL database.
+     *
+     * @param customer The Customer object to be inserted.
+     * @throws SQLException If a database access error occurs.
+     */
+    public void insertCustomer(Customer customer) throws SQLException {
+        String query = "INSERT INTO Customer (customerId, firstName, lastName, age, email, " +
+                "address, loyaltyPoints, newsletterSubscribed, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Update
-            updateCustomer(connection, 1, "Updated First Name");
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-            // Read again
-            customers = getAllCustomer(connection);
-            for (Customer customer : customers) {
-                System.out.println(customer.toString());
-            }
+            pstmt.setInt(1, customer.getCustomerId());
+            pstmt.setString(2, customer.getFirstName());
+            pstmt.setString(3, customer.getLastName());
+            pstmt.setInt(4, customer.getAge());
+            pstmt.setString(5, customer.getEmail());
+            pstmt.setString(6, customer.getAddress());
+            pstmt.setInt(7, customer.getLoyaltyPoints());
+            pstmt.setString(8, customer.getNewsletterSubscribed());
+            pstmt.setString(9, customer.getGender());
 
-            // Delete
-            deleteCustomer(connection, 1);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("MySQL: Inserted customer " + customer.getCustomerId() +
+                    " - Rows affected: " + rowsAffected);
         }
     }
 
-    private static void insertCustomer(Connection connection, int id, String firstName, String lastName, int age, String email) throws SQLException {
-        String sql = "INSERT INTO customers (id, firstName, lastName, age, email) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.setString(2, firstName);
-            preparedStatement.setString(3, lastName);
-            preparedStatement.setInt(4, age);
-            preparedStatement.setString(5, email);
-            preparedStatement.executeUpdate();
-        }
-    }
-
-    private static List<Customer> getAllCustomer(Connection connection) throws SQLException {
+    /**
+     * Reads all customers from the MySQL database.
+     *
+     * @return List of all Customer objects from the database.
+     * @throws SQLException If a database access error occurs.
+     */
+    public List<Customer> readAllCustomers() throws SQLException {
         List<Customer> customers = new ArrayList<>();
-        String sql = "SELECT id, firstName, lastName, age, email FROM customers";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String firstName = resultSet.getString("firstName");
-                String lastName = resultSet.getString("lastName");
-                int age = resultSet.getInt("age");
-                String email = resultSet.getString("email");
-                customers.add(new Customer(id, firstName, lastName, age, email));
+        String query = "SELECT * FROM Customer";
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Customer customer = new Customer(
+                        rs.getInt("customerId"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getInt("age"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getInt("loyaltyPoints"),
+                        rs.getString("newsletterSubscribed"),
+                        rs.getString("gender")
+                );
+                customers.add(customer);
             }
         }
+
+        System.out.println("MySQL: Retrieved " + customers.size() + " customers");
         return customers;
     }
 
-    private static void updateCustomer(Connection connection, int id, String newFirstName) throws SQLException {
-        String sql = "UPDATE customers SET firstName = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, newFirstName);
-            preparedStatement.setInt(2, id);
-            preparedStatement.executeUpdate();
+    /**
+     * Updates an existing customer in the MySQL database.
+     *
+     * @param customer The Customer object with updated information.
+     * @throws SQLException If a database access error occurs.
+     */
+    public void updateCustomer(Customer customer) throws SQLException {
+        String query = "UPDATE Customer SET firstName=?, lastName=?, age=?, email=?, " +
+                "address=?, loyaltyPoints=?, newsletterSubscribed=?, gender=? " +
+                "WHERE customerId=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, customer.getFirstName());
+            pstmt.setString(2, customer.getLastName());
+            pstmt.setInt(3, customer.getAge());
+            pstmt.setString(4, customer.getEmail());
+            pstmt.setString(5, customer.getAddress());
+            pstmt.setInt(6, customer.getLoyaltyPoints());
+            pstmt.setString(7, customer.getNewsletterSubscribed());
+            pstmt.setString(8, customer.getGender());
+            pstmt.setInt(9, customer.getCustomerId());
+
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("MySQL: Updated customer " + customer.getCustomerId() +
+                    " - Rows affected: " + rowsAffected);
         }
     }
 
-    private static void deleteCustomer(Connection connection, int id) throws SQLException {
-        String sql = "DELETE FROM customers WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
+    /**
+     * Deletes a customer from the MySQL database.
+     *
+     * @param customerId The ID of the customer to be deleted.
+     * @throws SQLException If a database access error occurs.
+     */
+    public void deleteCustomer(int customerId) throws SQLException {
+        String query = "DELETE FROM Customer WHERE customerId=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, customerId);
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("MySQL: Deleted customer " + customerId +
+                    " - Rows affected: " + rowsAffected);
         }
     }
-}
-
-class Customer {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String email;
-
-    public Customer(int id, String firstName, String lastName, int age, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
 }
