@@ -1,6 +1,6 @@
 /** Project: Lab3 - Customer Database Operations
  * Purpose Details: Defines Customer entity for retail shopping store
- * Course: IST 411
+ * Course: IST 242
  * Author: Edward Saldivar
  * Date Developed: 2/27/26
  * Last Date Changed: 3/1/26

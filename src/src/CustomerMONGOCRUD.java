@@ -1,6 +1,6 @@
 /** Project: Lab3 - MongoDB CRUD Operations
  * Purpose Details: Handles MongoDB database operations for Customer objects
- * Course: IST 411
+ * Course: IST 242
  * Author: Edward Saldivar
  * Date Developed: 2/27/26
  * Last Date Changed: 3/1/26

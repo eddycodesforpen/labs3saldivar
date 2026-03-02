@@ -1,6 +1,6 @@
 /** Project: Lab3 - Main Application for Database Operations
  * Purpose Details: Demonstrates CRUD operations on both MySQL and MongoDB
- * Course: IST 411
+ * Course: IST 242
  * Author: Saldivar
  * Date Developed: 2/27/26
  * Last Date Changed: 3/1/26
