@@ -9,8 +9,18 @@
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-
-public class Main {
+/**
+ * Main driver class for the Customer database application.
+ * Runs the program and demonstrates CRUD operations.
+ *
+ * Edward saldivar
+ * @version 1.0
+ */
+public class Main { /**
+ * Entry point of the program.
+ *
+ * @param args Command-line arguments
+ */
     public static void main(String[] args) {
 
         System.out.println("=== LAB 3: DATABASE OPERATIONS DEMONSTRATION ===\n");
@@ -20,9 +30,9 @@ public class Main {
          */
         Customer customer1 = new Customer(1, "Brady", "Swencak", 20, "bms7008@psu.edu",
                 "10 PSU Rd.", 20, "YES", "male");
-        Customer customer2 = new Customer(2, "John", "Doe", 20, "johndoe@psu.edu",
+        Customer customer2 = new Customer(2, "John", "Doe", 33, "johndoe@psu.edu",
                 "28 Penn State Drive", 0, "NO", "male");
-        Customer customer3 = new Customer(3, "Jane", "Does", 20, "janedoes@psu.edu",
+        Customer customer3 = new Customer(3, "Jane", "Does", 28, "janedoes@psu.edu",
                 "68 Road Rd.", 3284, "YES", "female");
 
         /**

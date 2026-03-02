@@ -1,19 +1,27 @@
 /** Project: Lab3 - MySQL CRUD Operations
  * Purpose Details: Handles MySQL database operations for Customer objects
  * Course: IST 411
- * Author: [YourLastName]
- * Date Developed: 2024-01-15
- * Last Date Changed: 2024-01-15
- * Rev: 1.0
+ * Author: EdwardSaldivar
+ * Date Developed: 2/27/26
+ * Last Date Changed: 3/1/26
  */
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Handles CRUD (Create, Read, Update, Delete) operations
+ * for Customer objects using a MySQL database.
+ *
+ * edward saldivar
+ * @version 1.0
+ */
 public class CustomerMySQLCRUD {
     /**
      * Database connection URL for MySQL.
+     */
+    /**
+     * Default constructor for CustomerMySQLCRUD.
      */
     private static final String URL = "jdbc:mysql://localhost:3306/retail_store";
 
@@ -71,6 +79,9 @@ public class CustomerMySQLCRUD {
      *
      * @return List of all Customer objects from the database.
      * @throws SQLException If a database access error occurs.
+     */
+    /**
+     * Default constructor for CustomerMONGOCRUD.
      */
     public List<Customer> readAllCustomers() throws SQLException {
         List<Customer> customers = new ArrayList<>();

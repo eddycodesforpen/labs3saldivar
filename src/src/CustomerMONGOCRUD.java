@@ -1,7 +1,7 @@
 /** Project: Lab3 - MongoDB CRUD Operations
  * Purpose Details: Handles MongoDB database operations for Customer objects
  * Course: IST 411
- * Author: Saldivar
+ * Author: Edward Saldivar
  * Date Developed: 2/27/26
  * Last Date Changed: 3/1/26
  */
@@ -12,6 +12,13 @@ import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * Handles CRUD operations for Customer objects
+ * using a MongoDB database.
+ *
+ * Edward saldivar
+ * @version 1.0
+ */
 
 public class CustomerMONGOCRUD {
     /**
